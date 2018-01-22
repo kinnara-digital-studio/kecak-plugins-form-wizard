@@ -3,21 +3,14 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.kecak.enterprise;
+package com.kinnara.kecakplugins.formwizard;
 
-import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Map;
 import org.joget.apps.app.dao.FormDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.FormDefinition;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.lib.HiddenField;
-import org.joget.apps.form.model.AbstractSubForm;
-import org.joget.apps.form.model.Element;
-import org.joget.apps.form.model.Form;
-import org.joget.apps.form.model.FormData;
-import org.joget.apps.form.model.FormRowSet;
+import org.joget.apps.form.model.*;
 import org.joget.apps.form.service.FormService;
 import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.LogUtil;
@@ -25,31 +18,34 @@ import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.springframework.beans.BeansException;
 
+import java.util.Collection;
+import java.util.Map;
+
 /**
  *
  * @author Yonathan
  */
-public class MultiPagedFormChild extends AbstractSubForm {
+public class FormWizardChild extends AbstractSubForm {
     private boolean skipFormatData = false;
     
     @Override
     public String getName() {
-        return "Multi Paged Form - Child Page";
+        return "Form Wizard - Child Page";
     }
 
     @Override
     public String getVersion() {
-        return "5.0.0";
+        return getClass().getPackage().getImplementationVersion();
     }
 
     @Override
     public String getDescription() {
-        return "";
+        return getClass().getPackage().getImplementationTitle();
     }
 
     @Override
     public String getLabel() {
-        return "Multi Paged Form - Child Page";
+        return getName();
     }
 
     public String getClassName() {
@@ -64,7 +60,7 @@ public class MultiPagedFormChild extends AbstractSubForm {
     @Override
     public Collection<Element> getChildren(FormData formData) {
         Collection<Element> children = super.getChildren();
-        if ((children == null || children.isEmpty()) && this.loadChild(formData).booleanValue()) {
+        if ((children == null || children.isEmpty()) && loadChild(formData).booleanValue()) {
 //            children = new Collection<Form>();
             Form childForm = this.loadChildForm(formData);
             if (childForm != null) {
@@ -92,17 +88,17 @@ public class MultiPagedFormChild extends AbstractSubForm {
             if (formData != null && formData.getProcessId() != null && !formData.getProcessId().isEmpty()) {
                 WorkflowManager wm = (WorkflowManager)AppUtil.getApplicationContext().getBean("workflowManager");
                 WorkflowAssignment wfAssignment = wm.getAssignmentByProcess(formData.getProcessId());
-                json = AppUtil.processHashVariable((String)json, (WorkflowAssignment)wfAssignment, (String)"json", (Map)null);
+                json = AppUtil.processHashVariable(json, wfAssignment, "json", (Map)null);
             }
             try {
                 childForm = (Form)formService.createElementFromJson(json);
                 childForm.setParent((Element)this);
-                if (!(childForm.getLoadBinder() == null || formData.getLoadBinderData((Element)childForm) != null || this.getPrimaryKeyValue(formData) == null || this.getPropertyString("pageNum").equals("1") && this.getPrimaryKeyValue(formData).isEmpty())) {
+                if (!(childForm.getLoadBinder() == null || formData.getLoadBinderData(childForm) != null || this.getPrimaryKeyValue(formData) == null || this.getPropertyString("pageNum").equals("1") && this.getPrimaryKeyValue(formData).isEmpty())) {
                     childForm = formService.loadFormData(childForm, formData);
                 } else {
                     formData = formService.executeFormOptionsBinders((Element)childForm, formData);
                 }
-                Element idElement = FormUtil.findElement((String)"id", (Element)childForm, (FormData)formData);
+                Element idElement = FormUtil.findElement("id", childForm, formData);
                 if (idElement == null) {
                     Collection subFormElements = childForm.getChildren();
                     idElement = new HiddenField();
@@ -112,12 +108,12 @@ public class MultiPagedFormChild extends AbstractSubForm {
                 }
             }
             catch (Exception e) {
-                LogUtil.error((String)MultiPagedFormChild.class.getName(), (Throwable)e, (String)"");
+                LogUtil.error(FormWizardChild.class.getName(), e, "");
             }
         }
         if (childForm != null) {
-            String parentId = FormUtil.getElementParameterName((Element)this);
-            this.updateElementParameterNames((Element)childForm, parentId);
+            String parentId = FormUtil.getElementParameterName(this);
+            this.updateElementParameterNames(childForm, parentId);
         }
         return childForm;
     }
@@ -125,7 +121,7 @@ public class MultiPagedFormChild extends AbstractSubForm {
     @Override
     public String renderTemplate(FormData formData, Map dataModel) {
         String html = "";
-        MultiPagedForm parent = (MultiPagedForm)this.getParent();
+        FormWizard parent = (FormWizard)this.getParent();
         Integer cPageNum = parent.getCurrentPageNumber(formData);
         html = this.getPropertyString("pageNum").equals(Integer.toString(cPageNum)) ? this.getHtml(formData, dataModel) : this.getDataHtml(formData, dataModel);
         return html;
@@ -154,7 +150,7 @@ public class MultiPagedFormChild extends AbstractSubForm {
         String paramName = FormUtil.getElementParameterName((Element)this);
         Map params = formData.getRequestParams();
         String disabled = "";
-        MultiPagedForm parent = (MultiPagedForm)this.getParent();
+        FormWizard parent = (FormWizard)this.getParent();
         if ("true".equalsIgnoreCase(parent.getPropertyString("partiallyStore"))) {
             disabled = " disabled=\"disabled\"";
         }
@@ -173,7 +169,7 @@ public class MultiPagedFormChild extends AbstractSubForm {
     }
 
     protected Boolean loadChild(FormData formData) {
-        MultiPagedForm parent = (MultiPagedForm)this.getParent();
+        FormWizard parent = (FormWizard)this.getParent();
         Integer cPageNum = parent.getCurrentPageNumber(formData);
         if (cPageNum != null && this.getPropertyString("pageNum").equals(Integer.toString(cPageNum))) {
             return true;
@@ -204,7 +200,7 @@ public class MultiPagedFormChild extends AbstractSubForm {
     protected Form getSubForm(FormData formData) {
         Collection<Element> children = this.getChildren(formData);
         if (children != null && !children.isEmpty()) {
-            return (Form)this.getChildren().iterator().next();
+            return (Form)getChildren().iterator().next();
         }
         return null;
     }
@@ -217,7 +213,7 @@ public class MultiPagedFormChild extends AbstractSubForm {
     @Override
     public FormRowSet formatData(FormData formData) {
         FormRowSet rowSet = super.formatData(formData);
-        MultiPagedForm parent = (MultiPagedForm)this.getParent();
+        FormWizard parent = (FormWizard)this.getParent();
         Integer cPageNum = parent.getCurrentPageNumber(formData);
         if (!"true".equals(this.getParent().getPropertyString("changePage")) && "true".equals(this.getParent().getPropertyString("partiallyStore")) && !this.getPropertyString("pageNum").equals(Integer.toString(cPageNum))) {
             this.skipFormatData = true;

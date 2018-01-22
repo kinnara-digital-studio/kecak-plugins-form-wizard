@@ -1,23 +1,23 @@
 [
     {
-        title:'@@form.multiPagedForm.edit@@',
+        title:'@@form.formWizard.edit@@',
         properties:[
             {
                 name:'id',
-                label:'@@form.multiPagedForm.id@@',
+                label:'@@form.formWizard.id@@',
                 type:'textfield',
                 required:'True',
                 regex_validation : '^[a-zA-Z0-9_]+$',
-                validation_message : '@@form.multiPagedForm.invalidId@@'
+                validation_message : '@@form.formWizard.invalidId@@'
             },
             {
                 name:'label',
-                label:'@@form.multiPagedForm.label@@',
+                label:'@@form.formWizard.label@@',
                 type:'textfield'
             },
             {
                 name:'numberOfPage',
-                label:'@@form.multiPagedForm.numberOfPage@@',
+                label:'@@form.formWizard.numberOfPage@@',
                 type : 'elementselect',
                 value : '2',
                 options : [
@@ -42,15 +42,15 @@
         ]
     },
     {
-        title:'@@form.multiPagedForm.advancedOptions@@',
+        title:'@@form.formWizard.advancedOptions@@',
         properties:[
             {
-                label : '@@form.multiPagedForm.data@@',
+                label : '@@form.formWizard.data@@',
                 type : 'header'
             },
             {
                 name:'partiallyStore',
-                label:'@@form.multiPagedForm.partiallyStore@@',
+                label:'@@form.formWizard.partiallyStore@@',
                 type:'checkbox',
                 value:'false',
                 options:[
@@ -62,7 +62,7 @@
             },
             {
                 name:'storeMainFormOnPartiallyStore',
-                label:'@@form.multiPagedForm.storeMainFormOnPartiallyStore@@',
+                label:'@@form.formWizard.storeMainFormOnPartiallyStore@@',
                 type:'checkbox',
                 value:'true',
                 control_field: 'partiallyStore',
@@ -75,40 +75,40 @@
                 ]
             },
             {
-                label : '@@form.multiPagedForm.ui@@',
+                label : '@@form.formWizard.ui@@',
                 type : 'header'
             },
             {
                 name:'displayMode',
-                label:'@@form.multiPagedForm.displayMode@@',
+                label:'@@form.formWizard.displayMode@@',
                 type:'selectbox',
                 value : 'wizard',
                 options : [
                     {
                         value : 'wizard',
-                        label : '@@form.multiPagedForm.displayMode.wizard@@'
+                        label : '@@form.formWizard.displayMode.wizard@@'
                     },
                     {
                         value : 'tab',
-                        label : '@@form.multiPagedForm.displayMode.tab@@'
+                        label : '@@form.formWizard.displayMode.tab@@'
                     }
                 ]
             },
             {
                 name:'prevButtonlabel',
-                label:'@@form.multiPagedForm.prevButtonlabel@@',
+                label:'@@form.formWizard.prevButtonlabel@@',
                 value : 'Prev',
                 type:'textfield'
             },
             {
                 name:'nextButtonlabel',
-                label:'@@form.multiPagedForm.nextButtonlabel@@',
+                label:'@@form.formWizard.nextButtonlabel@@',
                 value : 'Next',
                 type:'textfield'
             },
             {
                 name:'onlyAllowSubmitOnLastPage',
-                label:'@@form.multiPagedForm.onlyAllowSubmitOnLastPage@@',
+                label:'@@form.formWizard.onlyAllowSubmitOnLastPage@@',
                 type:'checkbox',
                 value:'false',
                 options:[
@@ -120,7 +120,7 @@
             },
             {
                 name : 'css',
-                label : '@@form.multiPagedForm.css@@',
+                label : '@@form.formWizard.css@@',
                 type : 'textarea',
                 cols : '60',
                 rows : '15'

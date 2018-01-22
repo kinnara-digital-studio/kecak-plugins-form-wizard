@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.kecak.enterprise;
+package com.kinnara.kecakplugins.formwizard;
 
 import java.util.ArrayList;
 import java.util.Map;
@@ -18,7 +18,7 @@ import org.joget.apps.form.service.FormUtil;
  *
  * @author Yonathan
  */
-public class MultiPagedFormKeyContainer extends Element implements FormContainer{
+public class FormWizardKeyContainer extends Element implements FormContainer{
 
     @Override
     public String renderTemplate(FormData formData, Map dataModel) {
@@ -30,19 +30,19 @@ public class MultiPagedFormKeyContainer extends Element implements FormContainer
     }
 
     public String getName() {
-        return "Multi Paged Form Key Container";
+        return "Form Wizard Key Container";
     }
 
     public String getVersion() {
-        return "5.0.0";
+        return getClass().getPackage().getImplementationVersion();
     }
 
     public String getDescription() {
-        return "";
+        return getClass().getPackage().getImplementationTitle();
     }
 
     public String getLabel() {
-        return "Multi Paged Form Key Container";
+        return getName();
     }
 
     public String getClassName() {
@@ -56,7 +56,7 @@ public class MultiPagedFormKeyContainer extends Element implements FormContainer
     public void addKeyElement(String key, FormData formData) {
         Form rootForm;
         Element keyElement;
-        if (key != null && !key.isEmpty() && (keyElement = FormUtil.findElement((String)key, (Element)(rootForm = FormUtil.findRootForm((Element)this)), (FormData)formData)) == null) {
+        if (key != null && !key.isEmpty() && (keyElement = FormUtil.findElement(key, rootForm = FormUtil.findRootForm(this), formData)) == null) {
             ArrayList<Element> children = (ArrayList<Element>) this.getChildren(formData);
             if (children == null) {
                 children = new ArrayList<Element>();

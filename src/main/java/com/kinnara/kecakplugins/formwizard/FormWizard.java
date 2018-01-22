@@ -3,7 +3,7 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.kecak.enterprise;
+package com.kinnara.kecakplugins.formwizard;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -14,6 +14,7 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import org.joget.apps.app.service.AppUtil;
+import org.joget.apps.form.lib.SubForm;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormBuilderPaletteElement;
@@ -32,7 +33,7 @@ import org.joget.workflow.util.WorkflowUtil;
  *
  * @author Yonathan
  */
-public class MultiPagedForm extends FormButton implements FormBuilderPaletteElement, PluginWebSupport, FormContainer {
+public class FormWizard extends FormButton implements FormBuilderPaletteElement, PluginWebSupport, FormContainer {
 
     private int currentPageNumber;
     private boolean partiallyStoreError = false;
@@ -42,27 +43,27 @@ public class MultiPagedForm extends FormButton implements FormBuilderPaletteElem
     }
 
     public String getVersion() {
-        return "5.0.0";
+        return getClass().getPackage().getImplementationVersion();
     }
 
     public String getDescription() {
-        return "Form with wizards element";
+        return "Form with wizard element";
     }
 
     public String getLabel() {
-        return "Form Wizards";
+        return "Form Wizard";
     }
 
     public String getClassName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     public String getPropertyOptions() {
-        return AppUtil.readPluginResource((String)this.getClass().getName(), (String)"/properties/multiPagedForm.json", (Object[])null, (boolean)true, null);
+        return AppUtil.readPluginResource((String)this.getClass().getName(), (String) "/properties/formWizard.json", (Object[])null, (boolean)true, null);
     }
 
     public String getFormBuilderCategory() {
-        return "Kecak Enterprise";
+        return "Kecak";
     }
 
     public int getFormBuilderPosition() {
@@ -70,11 +71,11 @@ public class MultiPagedForm extends FormButton implements FormBuilderPaletteElem
     }
 
     public String getFormBuilderIcon() {
-        return "/plugin/org.joget.apps.form.lib.SubForm/images/subForm_icon.gif";
+        return "/plugin/" + SubForm.class.getName() + "/images/subForm_icon.gif";
     }
 
     public String getFormBuilderTemplate() {
-        return "<label class='label'>Form Wizards</label>";
+        return "<label class='label'>Form Wizard</label>";
     }
 
     @Override
@@ -87,7 +88,7 @@ public class MultiPagedForm extends FormButton implements FormBuilderPaletteElem
                 Map temp = (Map) numberOfPageObject;
                 int numberOfPage = Integer.parseInt(temp.get("className").toString());
                 Map pagesProperties = (Map) temp.get("properties");
-                MultiPagedFormKeyContainer container = new MultiPagedFormKeyContainer();
+                FormWizardKeyContainer container = new FormWizardKeyContainer();
                 container.setParent((Element) this);
                 int pageCount = 0;
                 for (int page = 1; page <= numberOfPage; ++page) {
@@ -100,14 +101,14 @@ public class MultiPagedForm extends FormButton implements FormBuilderPaletteElem
                     if (!this.checkForRecursiveForm((Element) this, formDefId)) {
                         continue;
                     }
-                    MultiPagedFormChild pageElement = this.getChildPage(label, formDefId, readonly, parentSubFormId, subFormParentId, validate, Integer.toString(++pageCount));
+                    FormWizardChild pageElement = this.getChildPage(label, formDefId, readonly, parentSubFormId, subFormParentId, validate, Integer.toString(++pageCount));
                     children.add(pageElement);
                     container.addKeyElement(parentSubFormId, formData);
                 }
                 children.add(container);
-                this.setProperty("totalPage", (Object) Integer.toString(pageCount));
+                this.setProperty("totalPage", Integer.toString(pageCount));
             } else {
-                this.setProperty("totalPage", (Object) "0");
+                this.setProperty("totalPage", "0");
             }
         }
         return children;
@@ -164,22 +165,22 @@ public class MultiPagedForm extends FormButton implements FormBuilderPaletteElem
         if ("true".equals(this.getPropertyString("onlyAllowSubmitOnLastPage")) && totalPage != this.getCurrentPageNumber(formData)) {
             this.hideParentFormButton(null);
         }
-        String template = "multiPagedForm.ftl";
-        String html = FormUtil.generateElementHtml((Element) this, (FormData) formData, (String) template, (Map) dataModel);
+        String template = "formWizard.ftl";
+        String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
         return html;
     }
 
-    public MultiPagedFormChild getChildPage(String label, String formDefId, String readonly, String parentSubFormId, String subFormParentId, String validate, String pageNum) {
-        MultiPagedFormChild page = new MultiPagedFormChild();
-        page.setProperty("label", (Object) label);
-        page.setProperty("formDefId", (Object) formDefId);
-        page.setProperty("readonly", (Object) readonly);
-        page.setProperty("parentSubFormId", (Object) parentSubFormId);
-        page.setProperty("subFormParentId", (Object) subFormParentId);
-        page.setProperty("validate", (Object) validate);
-        this.setProperty("child_validate_page_" + pageNum, (Object) validate);
-        page.setProperty("pageNum", (Object) pageNum);
-        page.setProperty("id", (Object) (this.getPropertyString("id") + "_" + pageNum));
+    public FormWizardChild getChildPage(String label, String formDefId, String readonly, String parentSubFormId, String subFormParentId, String validate, String pageNum) {
+        FormWizardChild page = new FormWizardChild();
+        page.setProperty("label", label);
+        page.setProperty("formDefId", formDefId);
+        page.setProperty("readonly", readonly);
+        page.setProperty("parentSubFormId", parentSubFormId);
+        page.setProperty("subFormParentId", subFormParentId);
+        page.setProperty("validate", validate);
+        this.setProperty("child_validate_page_" + pageNum, validate);
+        page.setProperty("pageNum", pageNum);
+        page.setProperty("id", this.getPropertyString("id") + "_" + pageNum);
         page.setParent((Element) this);
         return page;
     }
@@ -197,7 +198,7 @@ public class MultiPagedForm extends FormButton implements FormBuilderPaletteElem
     }
 
     public void webService(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-        boolean isAdmin = WorkflowUtil.isCurrentUserInRole((String) "ROLE_ADMIN");
+        boolean isAdmin = WorkflowUtil.isCurrentUserInRole("ROLE_ADMIN");
         if (!isAdmin) {
             response.sendError(401);
             return;
@@ -210,7 +211,7 @@ public class MultiPagedForm extends FormButton implements FormBuilderPaletteElem
             for (int i = 1; i <= number; ++i) {
                 String pageNumber = Integer.toString(i);
                 Object[] arguments = new String[]{pageNumber, pageNumber, pageNumber, pageNumber, pageNumber, pageNumber, pageNumber, pageNumber, pageNumber};
-                output = output + AppUtil.readPluginResource((String) this.getClass().getName(), (String) "/properties/form/multiPagedFormChild.json", (Object[]) arguments, (boolean) true, (String) "message/form/multiPagedForm") + ",";
+                output = output + AppUtil.readPluginResource((String) this.getClass().getName(), "/properties/form/formWizardChild.json", arguments, true, "message/formWizard") + ",";
             }
             output = output.substring(0, output.length() - 1) + "]";
             response.getWriter().write(output);

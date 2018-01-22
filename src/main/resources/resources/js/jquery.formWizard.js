@@ -1,6 +1,6 @@
 (function($){
     $.fn.extend({
-        multiPagedForm : function(){
+        formWizard : function(){
             var target = this;
             if($(target)){
                 $(target).find(".page-nav-panel li.nav_item button").click(function(){

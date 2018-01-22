@@ -1,4 +1,4 @@
-package com.kecak.enterprise;
+package com.kinnara.kecakplugins.formwizard;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -14,7 +14,7 @@ public class Activator implements BundleActivator {
         registrationList = new ArrayList<ServiceRegistration>();
 
         //Register plugin here
-        registrationList.add(context.registerService(MultiPagedForm.class.getName(), new MultiPagedForm(), null));
+        registrationList.add(context.registerService(FormWizard.class.getName(), new FormWizard(), null));
     }
 
     public void stop(BundleContext context) {

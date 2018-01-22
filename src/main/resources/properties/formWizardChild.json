@@ -1,28 +1,28 @@
 
     {
-        title : '@@form.multiPagedForm.page@@ %s',
+        title : '@@form.formWizard.page@@ %s',
         properties : [
             {
-                label : '@@form.multiPagedForm.general@@',
+                label : '@@form.formWizard.general@@',
                 type : 'header'
             },
             {
                 name:'page%s_label',
-                label:'@@form.multiPagedForm.label@@',
+                label:'@@form.formWizard.label@@',
                 type:'textfield',
                 value : 'Page %s',
                 required : 'true'
             },
             {
                 name : 'page%s_formDefId',
-                label : '@@form.multiPagedForm.formDefId@@',
+                label : '@@form.formWizard.formDefId@@',
                 type : 'selectbox',
                 required : 'true',
                 options_ajax : '[CONTEXT_PATH]/web/json/console/app[APP_PATH]/forms/options'
             },
             {
                 name:'page%s_readonly',
-                label:'@@form.multiPagedForm.readonly@@',
+                label:'@@form.formWizard.readonly@@',
                 type:'checkbox',
                 value:'false',
                 options:[
@@ -33,27 +33,27 @@
                 ]
             },
             {
-                label : '@@form.multiPagedForm.dataLinkageAndValidation@@',
+                label : '@@form.formWizard.dataLinkageAndValidation@@',
                 type : 'header'
             },
             {
                 name:'page%s_parentSubFormId',
-                label:'@@form.multiPagedForm.parentField@@',
+                label:'@@form.formWizard.parentField@@',
                 type:'textfield',
                 value : 'page%s_key',
                 regex_validation : '^[a-zA-Z0-9_]+$',
-                validation_message : '@@form.multiPagedForm.invalidId@@'
+                validation_message : '@@form.formWizard.invalidId@@'
             },
             {
                 name:'page%s_subFormParentId',
-                label:'@@form.multiPagedForm.subformField@@',
+                label:'@@form.formWizard.subformField@@',
                 type:'textfield',
                 regex_validation : '^[a-zA-Z0-9_]+$',
-                validation_message : '@@form.multiPagedForm.invalidId@@'
+                validation_message : '@@form.formWizard.invalidId@@'
             },
             {
                 name:'page%s_validate',
-                label:'@@form.multiPagedForm.validateWhenChangePage@@',
+                label:'@@form.formWizard.validateWhenChangePage@@',
                 type:'checkbox',
                 value:'true',
                 options:[

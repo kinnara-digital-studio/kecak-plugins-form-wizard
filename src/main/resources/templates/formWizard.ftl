@@ -1,7 +1,7 @@
 <div class="form-cell" ${elementMetaData!}>
-    <#if !(request.getAttribute("com.kecak.enterprise.MultiPagedForm")??) >
-        <link href="${request.contextPath}/plugin/com.kecak.enterprise.MultiPagedForm/css/multiPagedForm.css" rel="stylesheet" type="text/css" />
-        <script type="text/javascript" src="${request.contextPath}/plugin/com.kecak.enterprise.MultiPagedForm/js/jquery.multiPagedForm.js"></script>
+    <#if !(request.getAttribute(className)??) >
+        <link href="${request.contextPath}/plugin/${className}/css/formWizard.css" rel="stylesheet" type="text/css" />
+        <script type="text/javascript" src="${request.contextPath}/plugin/${className}/js/jquery.formWizard.js"></script>
     </#if>
     
     <#if element.properties.css??>
@@ -9,7 +9,7 @@
             ${element.properties.css!}
         </style>
     </#if>
-    <div id="${elementParamName!}_multiPagedForm_${element.properties.elementUniqueKey!}" class="form-element multiPagedForm ${element.properties.displayMode!}">
+    <div id="${elementParamName!}_formWizard_${element.properties.elementUniqueKey!}" class="form-element formWizard ${element.properties.displayMode!}">
         
         <input type="hidden" class="cPageNum" name="${elementParamName!}_c_page_num" value="${cPageNum!?html}" />
         <input type="hidden" class="changePage" name="${elementParamName!}_change_page" value="" />
@@ -18,7 +18,7 @@
             <ul>
             <#assign mobileCss="before">
             <#list element.children as e>
-                <#if e.className == "com.kecak.enterprise.MultiPagedFormChild" >
+                <#if e.className == "FormWizardChild" >
                     <#assign errorCss="">
                     <#if e.hasError(formData) >
                         <#assign errorCss="error">
@@ -37,7 +37,7 @@
 
         <div class="page-container">
             <#list element.children as e>
-                <#if e.className == "com.kecak.enterprise.MultiPagedFormChild" >
+                <#if e.className == "FormWizardChild" >
                     <#if cPageNum! == e.properties.pageNum!> 
                         <div class="page_${e.properties.pageNum!} current">
                             ${e.render(formData, includeMetaData!false)}
@@ -59,7 +59,7 @@
             <ul>
             <#assign mobileCss="before">
             <#list element.children as e>
-                <#if e.className == "com.kecak.enterprise.MultiPagedFormChild" >
+                <#if e.className == "FormWizardChild" >
                     <#assign errorCss="">
                     <#if e.hasError(formData) >
                         <#assign errorCss="error">
@@ -84,7 +84,7 @@
     </div>
     <script type="text/javascript">
         $(document).ready(function(){
-            $("#${elementParamName!}_multiPagedForm_${element.properties.elementUniqueKey!}").multiPagedForm();
+            $("#${elementParamName!}_formWizard_${element.properties.elementUniqueKey!}").formWizard();
         });
     </script>
 </div>
