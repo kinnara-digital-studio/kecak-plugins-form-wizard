@@ -1,23 +1,23 @@
 [
     {
-        title:'@@form.formWizard.edit@@',
+        title:'@@formWizard.edit@@',
         properties:[
             {
                 name:'id',
-                label:'@@form.formWizard.id@@',
+                label:'@@formWizard.id@@',
                 type:'textfield',
                 required:'True',
                 regex_validation : '^[a-zA-Z0-9_]+$',
-                validation_message : '@@form.formWizard.invalidId@@'
+                validation_message : '@@formWizard.invalidId@@'
             },
             {
                 name:'label',
-                label:'@@form.formWizard.label@@',
+                label:'@@formWizard.label@@',
                 type:'textfield'
             },
             {
                 name:'numberOfPage',
-                label:'@@form.formWizard.numberOfPage@@',
+                label:'@@formWizard.numberOfPage@@',
                 type : 'elementselect',
                 value : '2',
                 options : [
@@ -42,15 +42,15 @@
         ]
     },
     {
-        title:'@@form.formWizard.advancedOptions@@',
+        title:'@@formWizard.advancedOptions@@',
         properties:[
             {
-                label : '@@form.formWizard.data@@',
+                label : '@@formWizard.data@@',
                 type : 'header'
             },
             {
                 name:'partiallyStore',
-                label:'@@form.formWizard.partiallyStore@@',
+                label:'@@formWizard.partiallyStore@@',
                 type:'checkbox',
                 value:'false',
                 options:[
@@ -62,7 +62,7 @@
             },
             {
                 name:'storeMainFormOnPartiallyStore',
-                label:'@@form.formWizard.storeMainFormOnPartiallyStore@@',
+                label:'@@formWizard.storeMainFormOnPartiallyStore@@',
                 type:'checkbox',
                 value:'true',
                 control_field: 'partiallyStore',
@@ -75,40 +75,40 @@
                 ]
             },
             {
-                label : '@@form.formWizard.ui@@',
+                label : '@@formWizard.ui@@',
                 type : 'header'
             },
             {
                 name:'displayMode',
-                label:'@@form.formWizard.displayMode@@',
+                label:'@@formWizard.displayMode@@',
                 type:'selectbox',
                 value : 'wizard',
                 options : [
                     {
                         value : 'wizard',
-                        label : '@@form.formWizard.displayMode.wizard@@'
+                        label : '@@formWizard.displayMode.wizard@@'
                     },
                     {
                         value : 'tab',
-                        label : '@@form.formWizard.displayMode.tab@@'
+                        label : '@@formWizard.displayMode.tab@@'
                     }
                 ]
             },
             {
                 name:'prevButtonlabel',
-                label:'@@form.formWizard.prevButtonlabel@@',
+                label:'@@formWizard.prevButtonlabel@@',
                 value : 'Prev',
                 type:'textfield'
             },
             {
                 name:'nextButtonlabel',
-                label:'@@form.formWizard.nextButtonlabel@@',
+                label:'@@formWizard.nextButtonlabel@@',
                 value : 'Next',
                 type:'textfield'
             },
             {
                 name:'onlyAllowSubmitOnLastPage',
-                label:'@@form.formWizard.onlyAllowSubmitOnLastPage@@',
+                label:'@@formWizard.onlyAllowSubmitOnLastPage@@',
                 type:'checkbox',
                 value:'false',
                 options:[
@@ -120,7 +120,7 @@
             },
             {
                 name : 'css',
-                label : '@@form.formWizard.css@@',
+                label : '@@formWizard.css@@',
                 type : 'textarea',
                 cols : '60',
                 rows : '15'
