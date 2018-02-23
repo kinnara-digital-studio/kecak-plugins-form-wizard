@@ -13,6 +13,8 @@ import java.util.Map;
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import org.joget.apps.app.service.AppPluginUtil;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.lib.SubForm;
 import org.joget.apps.form.model.Element;
@@ -39,7 +41,7 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
     private boolean partiallyStoreError = false;
 
     public String getName() {
-        return "Form Wizards";
+        return AppPluginUtil.getMessage("formWizard.title", getClassName(), "/message/formWizard");
     }
 
     public String getVersion() {
@@ -47,11 +49,11 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
     }
 
     public String getDescription() {
-        return "Form with wizard element";
+        return "Form with wizard element; " + getClass().getPackage().getImplementationTitle();
     }
 
     public String getLabel() {
-        return "Form Wizard";
+        return getName();
     }
 
     public String getClassName() {
@@ -59,7 +61,7 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
     }
 
     public String getPropertyOptions() {
-        return AppUtil.readPluginResource((String)this.getClass().getName(), (String) "/properties/formWizard.json", (Object[])null, (boolean)true, null);
+        return AppUtil.readPluginResource(this.getClass().getName(), "/properties/formWizard.json", null, true, "/message/formWizard");
     }
 
     public String getFormBuilderCategory() {
@@ -75,7 +77,7 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
     }
 
     public String getFormBuilderTemplate() {
-        return "<label class='label'>Form Wizard</label>";
+        return "<label class='label'>" + getName() + "</label>";
     }
 
     @Override
@@ -89,7 +91,7 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
                 int numberOfPage = Integer.parseInt(temp.get("className").toString());
                 Map pagesProperties = (Map) temp.get("properties");
                 FormWizardKeyContainer container = new FormWizardKeyContainer();
-                container.setParent((Element) this);
+                container.setParent(this);
                 int pageCount = 0;
                 for (int page = 1; page <= numberOfPage; ++page) {
                     String label = (String) pagesProperties.get("page" + page + "_label");
@@ -127,7 +129,7 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
         String paramName;
         Iterator i$;
         boolean hasError;
-        paramName = FormUtil.getElementParameterName((Element) this);
+        paramName = FormUtil.getElementParameterName(this);
         pageNum = this.getCurrentPageNumber(formData);
         LogUtil.info(this.getClass().getName(), "[PAGE NUMBER] "+pageNum);
         totalPage = Integer.parseInt((String) this.getProperty("totalPage"));
@@ -165,6 +167,8 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
         if ("true".equals(this.getPropertyString("onlyAllowSubmitOnLastPage")) && totalPage != this.getCurrentPageNumber(formData)) {
             this.hideParentFormButton(null);
         }
+
+        dataModel.put("className", getClassName());
         String template = "formWizard.ftl";
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
         return html;

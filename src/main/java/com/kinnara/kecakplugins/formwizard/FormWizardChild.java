@@ -8,6 +8,7 @@ package com.kinnara.kecakplugins.formwizard;
 import org.joget.apps.app.dao.FormDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.FormDefinition;
+import org.joget.apps.app.service.AppPluginUtil;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.lib.HiddenField;
 import org.joget.apps.form.model.*;
@@ -30,7 +31,7 @@ public class FormWizardChild extends AbstractSubForm {
     
     @Override
     public String getName() {
-        return "Form Wizard - Child Page";
+        return AppPluginUtil.getMessage("formWizard.title", getClassName(), "/message/formWizard") + " - Child Page";
     }
 
     @Override

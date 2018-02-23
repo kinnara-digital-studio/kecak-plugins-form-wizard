@@ -7,6 +7,8 @@ package com.kinnara.kecakplugins.formwizard;
 
 import java.util.ArrayList;
 import java.util.Map;
+
+import org.joget.apps.app.service.AppPluginUtil;
 import org.joget.apps.form.lib.HiddenField;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.Form;
@@ -30,7 +32,7 @@ public class FormWizardKeyContainer extends Element implements FormContainer{
     }
 
     public String getName() {
-        return "Form Wizard Key Container";
+        return AppPluginUtil.getMessage("formWizard.title", getClassName(), "/message/formWizard") + " Key Container";
     }
 
     public String getVersion() {
