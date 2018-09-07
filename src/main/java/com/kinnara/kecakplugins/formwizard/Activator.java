@@ -1,10 +1,11 @@
 package com.kinnara.kecakplugins.formwizard;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;
+
+import java.util.ArrayList;
+import java.util.Collection;
 
 public class Activator implements BundleActivator {
 
@@ -15,6 +16,7 @@ public class Activator implements BundleActivator {
 
         //Register plugin here
         registrationList.add(context.registerService(FormWizard.class.getName(), new FormWizard(), null));
+//        registrationList.add(context.registerService(MultiPagedForm.class.getName(), new MultiPagedForm(), null));
     }
 
     public void stop(BundleContext context) {

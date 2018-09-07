@@ -24,11 +24,11 @@ public class FormWizardKeyContainer extends Element implements FormContainer{
 
     @Override
     public String renderTemplate(FormData formData, Map dataModel) {
-        String html = "";
+        StringBuilder html = new StringBuilder();
         for (Element child : this.getChildren(formData)) {
-            html = html + child.render(formData, Boolean.valueOf(false));
+            html.append(child.render(formData, false));
         }
-        return html;
+        return html.toString();
     }
 
     public String getName() {

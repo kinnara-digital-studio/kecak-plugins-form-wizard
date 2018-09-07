@@ -49,7 +49,7 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
     }
 
     public String getDescription() {
-        return "Form with wizard element; " + getClass().getPackage().getImplementationTitle();
+        return getClass().getPackage().getImplementationTitle();
     }
 
     public String getLabel() {
@@ -84,7 +84,6 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
     public Collection<Element> getChildren(FormData formData) {
         Collection children = super.getChildren();
         if (formData != null && (children == null || children.isEmpty())) {
-            LogUtil.info(this.getClass().getName(), "[GET CHILDREN] ");
             Object numberOfPageObject = this.getProperty("numberOfPage");
             if (numberOfPageObject instanceof Map) {
                 Map temp = (Map) numberOfPageObject;
@@ -169,6 +168,7 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
         }
 
         dataModel.put("className", getClassName());
+        dataModel.put("formWizardChildClassName", FormWizardChild.class.getName());
         String template = "formWizard.ftl";
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
         return html;

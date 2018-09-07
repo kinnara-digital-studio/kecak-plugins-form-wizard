@@ -19,6 +19,7 @@ import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.springframework.beans.BeansException;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 
@@ -62,7 +63,7 @@ public class FormWizardChild extends AbstractSubForm {
     public Collection<Element> getChildren(FormData formData) {
         Collection<Element> children = super.getChildren();
         if ((children == null || children.isEmpty()) && loadChild(formData).booleanValue()) {
-//            children = new Collection<Form>();
+            children = new ArrayList<>();
             Form childForm = this.loadChildForm(formData);
             if (childForm != null) {
                 children.add(childForm);
@@ -89,11 +90,11 @@ public class FormWizardChild extends AbstractSubForm {
             if (formData != null && formData.getProcessId() != null && !formData.getProcessId().isEmpty()) {
                 WorkflowManager wm = (WorkflowManager)AppUtil.getApplicationContext().getBean("workflowManager");
                 WorkflowAssignment wfAssignment = wm.getAssignmentByProcess(formData.getProcessId());
-                json = AppUtil.processHashVariable(json, wfAssignment, "json", (Map)null);
+                json = AppUtil.processHashVariable(json, wfAssignment, "json", null);
             }
             try {
                 childForm = (Form)formService.createElementFromJson(json);
-                childForm.setParent((Element)this);
+                childForm.setParent(this);
                 if (!(childForm.getLoadBinder() == null || formData.getLoadBinderData(childForm) != null || this.getPrimaryKeyValue(formData) == null || this.getPropertyString("pageNum").equals("1") && this.getPrimaryKeyValue(formData).isEmpty())) {
                     childForm = formService.loadFormData(childForm, formData);
                 } else {

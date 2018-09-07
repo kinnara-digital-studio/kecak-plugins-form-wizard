@@ -18,7 +18,7 @@
             <ul>
             <#assign mobileCss="before">
             <#list element.children as e>
-                <#if e.className == "FormWizardChild" >
+                <#if e.className == '${formWizardChildClassName}' >
                     <#assign errorCss="">
                     <#if e.hasError(formData) >
                         <#assign errorCss="error">
@@ -37,7 +37,7 @@
 
         <div class="page-container">
             <#list element.children as e>
-                <#if e.className == "FormWizardChild" >
+                <#if e.className == '${formWizardChildClassName}' >
                     <#if cPageNum! == e.properties.pageNum!> 
                         <div class="page_${e.properties.pageNum!} current">
                             ${e.render(formData, includeMetaData!false)}
@@ -59,7 +59,7 @@
             <ul>
             <#assign mobileCss="before">
             <#list element.children as e>
-                <#if e.className == "FormWizardChild" >
+                <#if e.className == '${formWizardChildClassName}' >
                     <#assign errorCss="">
                     <#if e.hasError(formData) >
                         <#assign errorCss="error">
@@ -85,6 +85,5 @@
     <script type="text/javascript">
         $(document).ready(function(){
             $("#${elementParamName!}_formWizard_${element.properties.elementUniqueKey!}").formWizard();
-        });
     </script>
 </div>
