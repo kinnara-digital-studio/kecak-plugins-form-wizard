@@ -84,6 +84,7 @@
     </div>
     <script type="text/javascript">
         $(document).ready(function(){
-            $("#${elementParamName!}_formWizard_${element.properties.elementUniqueKey!}").formWizard();
+        	$("#${elementParamName!}_formWizard_${element.properties.elementUniqueKey!}").formWizard();
+        });
     </script>
 </div>

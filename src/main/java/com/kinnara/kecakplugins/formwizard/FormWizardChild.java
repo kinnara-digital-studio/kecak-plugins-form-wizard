@@ -110,7 +110,7 @@ public class FormWizardChild extends AbstractSubForm {
                 }
             }
             catch (Exception e) {
-                LogUtil.error(FormWizardChild.class.getName(), e, "");
+                LogUtil.error(FormWizardChild.class.getName(), e, e.getMessage());
             }
         }
         if (childForm != null) {
