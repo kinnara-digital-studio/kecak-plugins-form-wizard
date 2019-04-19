@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.kinnara.kecakplugins.formwizard;
 
 import org.joget.apps.app.dao.FormDefinitionDao;
@@ -110,7 +105,7 @@ public class FormWizardChild extends AbstractSubForm {
                 }
             }
             catch (Exception e) {
-                LogUtil.error(FormWizardChild.class.getName(), e, "");
+                LogUtil.error(FormWizardChild.class.getName(), e, e.getMessage());
             }
         }
         if (childForm != null) {
