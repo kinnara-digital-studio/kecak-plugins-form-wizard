@@ -38,3 +38,9 @@ buildNumber.properties
 
 .idea/
 *.iml
+
+.classpath
+.project
+
+.settings
+.DS_Store
