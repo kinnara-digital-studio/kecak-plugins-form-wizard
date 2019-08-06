@@ -30,6 +30,7 @@ import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.LogUtil;
 import org.joget.plugin.base.PluginWebSupport;
 import org.joget.workflow.util.WorkflowUtil;
+import org.osgi.framework.BundleContext;
 
 /**
  *
@@ -39,6 +40,23 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
 
     private int currentPageNumber;
     private boolean partiallyStoreError = false;
+
+    @Override
+    public void start(BundleContext context) {
+        super.start(context);
+
+        // copy to ubuilder
+        // ...
+    }
+
+
+    @Override
+    public void stop(BundleContext context) {
+        // delete from ubuilder
+        // ...
+
+        super.stop(context);
+    }
 
     public String getName() {
         return AppPluginUtil.getMessage("formWizard.title", getClassName(), "/message/formWizard");
@@ -61,7 +79,8 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
     }
 
     public String getPropertyOptions() {
-        return AppUtil.readPluginResource(this.getClass().getName(), "/properties/formWizard.json", null, true, "/message/formWizard");
+        String[] args = {getClassName()};
+        return AppUtil.readPluginResource(getClassName(), "/properties/formWizard.json", args, true, "/message/formWizard");
     }
 
     public String getFormBuilderCategory() {
@@ -201,6 +220,7 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
         return true;
     }
 
+    @Override
     public void webService(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         boolean isAdmin = WorkflowUtil.isCurrentUserInRole("ROLE_ADMIN");
         if (!isAdmin) {
@@ -211,22 +231,22 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
         if ("getJson".equals(action)) {
             String value = request.getParameter("value");
             int number = Integer.parseInt(value);
-            String output = "[";
+            StringBuilder output = new StringBuilder("[");
             for (int i = 1; i <= number; ++i) {
                 String pageNumber = Integer.toString(i);
                 Object[] arguments = new String[]{pageNumber, pageNumber, pageNumber, pageNumber, pageNumber, pageNumber, pageNumber, pageNumber, pageNumber};
-                output = output + AppUtil.readPluginResource((String) this.getClass().getName(), "/properties/form/formWizardChild.json", arguments, true, "message/formWizard") + ",";
+                output.append(AppUtil.readPluginResource(this.getClass().getName(), "/properties/formWizardChild.json", arguments, true, "message/formWizard")).append(",");
             }
-            output = output.substring(0, output.length() - 1) + "]";
-            response.getWriter().write(output);
+            output = new StringBuilder(output.substring(0, output.length() - 1) + "]");
+            response.getWriter().write(output.toString());
         } else {
             response.setStatus(204);
         }
     }
 
     public FormData actionPerformed(Form form, FormData formData) {
-        formData = FormUtil.executeElementFormatDataForValidation((Element) form, (FormData) formData);
-        FormUtil.executeValidators((Element) this, (FormData) formData);
+        formData = FormUtil.executeElementFormatDataForValidation(form, formData);
+        FormUtil.executeValidators(this, formData);
         if ("true".equalsIgnoreCase(this.getPropertyString("partiallyStore")) && formData.getFormResult("_PREVIEW_MODE") == null) {
             this.partiallyStoreError = false;
             Integer pageNum = this.getCurrentPageNumber(formData);

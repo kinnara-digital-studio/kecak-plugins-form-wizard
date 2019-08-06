@@ -214,14 +214,14 @@ public class FormWizardChild extends AbstractSubForm {
         Integer cPageNum = parent.getCurrentPageNumber(formData);
         if (!"true".equals(this.getParent().getPropertyString("changePage")) && "true".equals(this.getParent().getPropertyString("partiallyStore")) && !this.getPropertyString("pageNum").equals(Integer.toString(cPageNum))) {
             this.skipFormatData = true;
-            this.setProperty("readonly", (Object)"true");
+            this.setProperty("readonly", "true");
         }
         return rowSet;
     }
 
     @Override
     public Boolean hasError(FormData formData) {
-        String paramName = FormUtil.getElementParameterName((Element)this);
+        String paramName = FormUtil.getElementParameterName(this);
         Map errors = formData.getFormErrors();
         for (Object error : errors.keySet()) {
             if (!((String)error).startsWith(paramName + "_")) continue;

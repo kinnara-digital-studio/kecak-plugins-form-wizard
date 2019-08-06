@@ -36,7 +36,7 @@
                     {value : '14' , label : '14'},
                     {value : '15' , label : '15'}
                 ],
-                url : '[CONTEXT_PATH]/web/json/app[APP_PATH]/plugin/com.kecak.enterprise.MultiPagedForm/service?action=getJson',
+                url : '[CONTEXT_PATH]/web/json/app[APP_PATH]/plugin/%s/service?action=getJson',
                 keep_value_on_change : 'true'
             }
         ]
