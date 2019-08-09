@@ -99,8 +99,8 @@ public class FormWizardChild extends AbstractSubForm {
                 if (idElement == null) {
                     Collection subFormElements = childForm.getChildren();
                     idElement = new HiddenField();
-                    idElement.setProperty("id", (Object)"id");
-                    idElement.setParent((Element)childForm);
+                    idElement.setProperty("id", "id");
+                    idElement.setParent(childForm);
                     subFormElements.add(idElement);
                 }
             }
@@ -125,12 +125,12 @@ public class FormWizardChild extends AbstractSubForm {
     }
 
     protected String getHtml(FormData formData, Map dataModel) {
-        String elementMetaData = (Boolean)dataModel.get("includeMetaData") != false ? FormUtil.generateElementMetaData((Element)this) : "";
+        String elementMetaData = (Boolean) dataModel.get("includeMetaData") ? FormUtil.generateElementMetaData(this) : "";
         Form childForm = this.getSubForm(formData);
         String readonly = "true".equalsIgnoreCase(this.getPropertyString("readonly")) ? " readonly" : "";
         String html = "<div class='subform-cell' " + elementMetaData + "><div class='mpf-container" + readonly + "'>";
         if (childForm != null) {
-            String subFormHtml = childForm.render(formData, Boolean.valueOf(false));
+            String subFormHtml = childForm.render(formData, Boolean.FALSE);
             subFormHtml = subFormHtml.replaceAll("\"form-section", "\"subform-section");
             subFormHtml = subFormHtml.replaceAll("\"form-column", "\"subform-column");
             subFormHtml = subFormHtml.replaceAll("\"form-cell", "\"subform-cell");
@@ -144,7 +144,7 @@ public class FormWizardChild extends AbstractSubForm {
 
     protected String getDataHtml(FormData formData, Map dataModel) {
         String html = "";
-        String paramName = FormUtil.getElementParameterName((Element)this);
+        String paramName = FormUtil.getElementParameterName(this);
         Map params = formData.getRequestParams();
         String disabled = "";
         FormWizard parent = (FormWizard)this.getParent();
@@ -171,7 +171,7 @@ public class FormWizardChild extends AbstractSubForm {
         if (cPageNum != null && this.getPropertyString("pageNum").equals(Integer.toString(cPageNum))) {
             return true;
         }
-        if (FormUtil.isFormSubmitted((Element)this, (FormData)formData) && !parent.isActive(FormUtil.findRootForm((Element)parent), formData)) {
+        if (FormUtil.isFormSubmitted(this, formData) && !parent.isActive(FormUtil.findRootForm(parent), formData)) {
             return true;
         }
         return formData.getFormResult("FORM_RESULT_LOAD_ALL_DATA") != null;
@@ -182,10 +182,10 @@ public class FormWizardChild extends AbstractSubForm {
         String primaryKeyValue = null;
         String parentSubFormId = this.getPropertyString("parentSubFormId");
         if (parentSubFormId != null && !parentSubFormId.isEmpty()) {
-            Form rootForm = FormUtil.findRootForm((Element)this);
-            Element foreignKeyElement = FormUtil.findElement((String)parentSubFormId, (Element)rootForm, (FormData)formData);
+            Form rootForm = FormUtil.findRootForm(this);
+            Element foreignKeyElement = FormUtil.findElement(parentSubFormId, rootForm, formData);
             if (foreignKeyElement != null) {
-                primaryKeyValue = FormUtil.getElementPropertyValue((Element)foreignKeyElement, (FormData)formData);
+                primaryKeyValue = FormUtil.getElementPropertyValue(foreignKeyElement, formData);
             }
         } else {
             primaryKeyValue = super.getPrimaryKeyValue(formData);

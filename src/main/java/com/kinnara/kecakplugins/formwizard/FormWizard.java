@@ -111,7 +111,7 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
                     String parentSubFormId = (String) pagesProperties.get("page" + page + "_parentSubFormId");
                     String subFormParentId = (String) pagesProperties.get("page" + page + "_subFormParentId");
                     String validate = (String) pagesProperties.get("page" + page + "_validate");
-                    if (!this.checkForRecursiveForm((Element) this, formDefId)) {
+                    if (!this.checkForRecursiveForm(this, formDefId)) {
                         continue;
                     }
                     FormWizardChild pageElement = this.getChildPage(label, formDefId, readonly, parentSubFormId, subFormParentId, validate, Integer.toString(++pageCount));
@@ -197,18 +197,18 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
         this.setProperty("child_validate_page_" + pageNum, validate);
         page.setProperty("pageNum", pageNum);
         page.setProperty("id", this.getPropertyString("id") + "_" + pageNum);
-        page.setParent((Element) this);
+        page.setParent(this);
         return page;
     }
 
     protected boolean checkForRecursiveForm(Element e, String id) {
-        Form form = FormUtil.findRootForm((Element) e);
+        Form form = FormUtil.findRootForm(e);
         if (form != null && form != e) {
             String formId = form.getPropertyString("id");
             if (id.equals(formId)) {
                 return false;
             }
-            return this.checkForRecursiveForm((Element) form, id);
+            return this.checkForRecursiveForm(form, id);
         }
         return true;
     }
@@ -247,21 +247,21 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
                 if (!pageNum.toString().equals(e.getPropertyString("pageNum")) || e.hasError(formData)) {
                     continue;
                 }
-                formData = FormUtil.executeElementFormatData((Element) form, (FormData) formData);
+                formData = FormUtil.executeElementFormatData(form, formData);
                 try {
                     if ("true".equalsIgnoreCase(this.getPropertyString("storeMainFormOnPartiallyStore"))) {
                         FormStoreBinder binder = form.getStoreBinder();
                         FormRowSet rows = formData.getStoreBinderData(binder);
-                        binder.store((Element) form, rows, formData);
+                        binder.store(form, rows, formData);
                     }
                     FormService formService = (FormService) AppUtil.getApplicationContext().getBean("formService");
                     formData = formService.storeElementData(form, e, formData);
-                    e.setProperty("validate", (Object) "true");
+                    e.setProperty("validate", "true");
                 } catch (Exception ex) {
-                    String formId = FormUtil.getElementParameterName((Element) form);
+                    String formId = FormUtil.getElementParameterName(form);
                     formData.addFormError(formId, "Error storing data: " + ex.getMessage());
                     this.partiallyStoreError = true;
-                    LogUtil.error((String) FormService.class.getName(), (Throwable) ex, (String) "Error executing store binder");
+                    LogUtil.error(FormService.class.getName(), ex, "Error executing store binder");
                 }
                 break;
             }
@@ -271,7 +271,7 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
 
     @Override
     public boolean isActive(Form form, FormData formData) {
-        String paramName = FormUtil.getElementParameterName((Element) this);
+        String paramName = FormUtil.getElementParameterName(this);
         Integer pageNum = this.getCurrentPageNumber(formData);
         Integer totalPage = Integer.parseInt((String) this.getProperty("totalPage"));
         Boolean changePage = false;
@@ -292,7 +292,7 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
         }
         if (changePage) {
             formData.setStay(true);
-            this.setProperty("changePage", (Object) "true");
+            this.setProperty("changePage", "true");
         }
         return changePage;
     }
@@ -311,12 +311,13 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
 
     protected void hideParentFormButton(Element element) {
         if (element == null) {
-            element = FormUtil.findRootForm((Element) this);
+            element = FormUtil.findRootForm(this);
         }
         if (element != null && element != this) {
             Collection childs;
             if (element instanceof FormButton) {
-                element.setProperty("disabled", (Object) "true");
+                LogUtil.info(getClassName(), "Disabling button ["+element.getPropertyString("id")+"]");
+                element.setProperty("disabled", "true");
             }
             if ((childs = element.getChildren()) != null && !childs.isEmpty()) {
                 for (Object e : childs) {

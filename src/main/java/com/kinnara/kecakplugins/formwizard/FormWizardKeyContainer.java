@@ -64,10 +64,10 @@ public class FormWizardKeyContainer extends Element implements FormContainer{
                 children = new ArrayList<Element>();
             }
             keyElement = new HiddenField();
-            keyElement.setProperty("id", (Object)key);
-            keyElement.setProperty("useDefaultWhenEmpty", (Object)"true");
-            keyElement.setProperty("readonly", (Object)"true");
-            keyElement.setParent((Element)this);
+            keyElement.setProperty("id", key);
+            keyElement.setProperty("useDefaultWhenEmpty", "true");
+            keyElement.setProperty("readonly", "true");
+            keyElement.setParent(this);
             children.add(keyElement);
             this.setChildren(children);
         }
