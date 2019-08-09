@@ -5,9 +5,6 @@
  */
 package com.kinnara.kecakplugins.formwizard;
 
-import java.util.ArrayList;
-import java.util.Map;
-
 import org.joget.apps.app.service.AppPluginUtil;
 import org.joget.apps.form.lib.HiddenField;
 import org.joget.apps.form.model.Element;
@@ -15,6 +12,9 @@ import org.joget.apps.form.model.Form;
 import org.joget.apps.form.model.FormContainer;
 import org.joget.apps.form.model.FormData;
 import org.joget.apps.form.service.FormUtil;
+
+import java.util.ArrayList;
+import java.util.Map;
 
 /**
  *
