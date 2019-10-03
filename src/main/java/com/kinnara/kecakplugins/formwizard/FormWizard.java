@@ -134,8 +134,8 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
 
     @Override
     public String renderTemplate(FormData formData, Map dataModel) {
-        Integer totalPage;
-        Integer pageNum;
+        int totalPage;
+        int pageNum;
         Collection<Element> childs;
         String paramName;
         Iterator i$;
@@ -175,7 +175,7 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
             this.currentPageNumber = Integer.parseInt(formData.getRequestParameter(paramName + "_change_page"));
         }
         dataModel.put("cPageNum", Integer.toString(this.getCurrentPageNumber(formData)));
-        if ("true".equals(this.getPropertyString("onlyAllowSubmitOnLastPage")) && totalPage != this.getCurrentPageNumber(formData)) {
+        if ("true".equals(getPropertyString("onlyAllowSubmitOnLastPage")) && totalPage != getCurrentPageNumber(formData)) {
             this.hideParentFormButton(null);
         }
 
@@ -298,15 +298,15 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
     }
 
     protected Integer getCurrentPageNumber(FormData formData) {
-        if(formData != null && this.currentPageNumber == 0) {
+        if(formData != null && currentPageNumber == 0) {
             String paramName = FormUtil.getElementParameterName((Element) this);
             String cPageNum = formData.getRequestParameter(paramName + "_c_page_num");
             if (cPageNum == null) {
                 cPageNum = "1";
             }
-            this.currentPageNumber = Integer.parseInt(cPageNum);
+            currentPageNumber = Integer.parseInt(cPageNum);
         }
-        return this.currentPageNumber;
+        return currentPageNumber;
     }
 
     protected void hideParentFormButton(Element element) {
@@ -317,7 +317,8 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
             Collection childs;
             if (element instanceof FormButton) {
                 LogUtil.info(getClassName(), "Disabling button ["+element.getPropertyString("id")+"]");
-                element.setProperty("disabled", "true");
+                FormUtil.setReadOnlyProperty(element);
+//                element.setProperty("disabled", "true");
             }
             if ((childs = element.getChildren()) != null && !childs.isEmpty()) {
                 for (Object e : childs) {
