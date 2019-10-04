@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.kinnara.kecakplugins.formwizard;
 
 import org.joget.apps.app.service.AppPluginUtil;
@@ -30,23 +25,6 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
 
     private int currentPageNumber = 0;
     private boolean partiallyStoreError = false;
-
-    @Override
-    public void start(BundleContext context) {
-        super.start(context);
-
-        // copy to ubuilder
-        // ...
-    }
-
-
-    @Override
-    public void stop(BundleContext context) {
-        // delete from ubuilder
-        // ...
-
-        super.stop(context);
-    }
 
     public String getName() {
         return AppPluginUtil.getMessage("formWizard.title", getClassName(), "/message/formWizard");
@@ -139,7 +117,7 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
         boolean hasError;
         paramName = FormUtil.getElementParameterName(this);
         pageNum = getCurrentPageNumber(formData);
-        totalPage = Integer.parseInt((String) getProperty("totalPage"));
+        totalPage = Integer.parseInt(getPropertyString("totalPage"));
         hasError = true;
         if ("true".equals(getPropertyString("child_validate_page_" + currentPageNumber))) {
             childs = getChildren(formData);
