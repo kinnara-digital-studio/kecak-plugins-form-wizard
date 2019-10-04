@@ -14,6 +14,7 @@ import org.joget.workflow.model.WorkflowAssignment;
 import org.joget.workflow.model.service.WorkflowManager;
 import org.springframework.beans.BeansException;
 
+import javax.annotation.Nonnull;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
@@ -46,7 +47,7 @@ public class FormWizardChild extends AbstractSubForm {
     }
 
     public String getClassName() {
-        return this.getClass().getName();
+        return getClass().getName();
     }
 
     @Override
@@ -55,24 +56,24 @@ public class FormWizardChild extends AbstractSubForm {
     }
     
     @Override
-    public Collection<Element> getChildren(FormData formData) {
+    public Collection<Element> getChildren(@Nonnull FormData formData) {
         Collection<Element> children = super.getChildren();
-        if ((children == null || children.isEmpty()) && loadChild(formData).booleanValue()) {
+        if ((children == null || children.isEmpty()) && loadChild(formData)) {
             children = new ArrayList<>();
-            Form childForm = this.loadChildForm(formData);
+            Form childForm = loadChildForm(formData);
             if (childForm != null) {
                 children.add(childForm);
-                this.setChildren(children);
+                setChildren(children);
             }
         }
         return children;
     }
     
-    protected Form loadChildForm(FormData formData) throws BeansException {
+    protected Form loadChildForm(@Nonnull FormData formData) throws BeansException {
         Form childForm = null;
         FormService formService = (FormService)FormUtil.getApplicationContext().getBean("formService");
         String json = "";
-        String formDefId = this.getPropertyString("formDefId");
+        String formDefId = getPropertyString("formDefId");
         if (formDefId != null && !formDefId.isEmpty()) {
             AppDefinition appDef = AppUtil.getCurrentAppDefinition();
             FormDefinitionDao formDefinitionDao = (FormDefinitionDao)FormUtil.getApplicationContext().getBean("formDefinitionDao");
@@ -90,7 +91,7 @@ public class FormWizardChild extends AbstractSubForm {
             try {
                 childForm = (Form)formService.createElementFromJson(json);
                 childForm.setParent(this);
-                if (!(childForm.getLoadBinder() == null || formData.getLoadBinderData(childForm) != null || this.getPrimaryKeyValue(formData) == null || this.getPropertyString("pageNum").equals("1") && this.getPrimaryKeyValue(formData).isEmpty())) {
+                if (!(childForm.getLoadBinder() == null || formData.getLoadBinderData(childForm) != null || getPrimaryKeyValue(formData) == null || getPropertyString("pageNum").equals("1") && getPrimaryKeyValue(formData).isEmpty())) {
                     childForm = formService.loadFormData(childForm, formData);
                 } else {
                     formData = formService.executeFormOptionsBinders((Element)childForm, formData);
@@ -110,7 +111,7 @@ public class FormWizardChild extends AbstractSubForm {
         }
         if (childForm != null) {
             String parentId = FormUtil.getElementParameterName(this);
-            this.updateElementParameterNames(childForm, parentId);
+            updateElementParameterNames(childForm, parentId);
         }
         return childForm;
     }
@@ -118,16 +119,16 @@ public class FormWizardChild extends AbstractSubForm {
     @Override
     public String renderTemplate(FormData formData, Map dataModel) {
         String html = "";
-        FormWizard parent = (FormWizard)this.getParent();
-        Integer cPageNum = parent.getCurrentPageNumber(formData);
-        html = this.getPropertyString("pageNum").equals(Integer.toString(cPageNum)) ? this.getHtml(formData, dataModel) : this.getDataHtml(formData, dataModel);
+        FormWizard parent = (FormWizard)getParent();
+        int cPageNum = parent.getCurrentPageNumber(formData);
+        html = getPropertyString("pageNum").equals(Integer.toString(cPageNum)) ? getHtml(formData, dataModel) : getDataHtml(formData, dataModel);
         return html;
     }
 
     protected String getHtml(FormData formData, Map dataModel) {
         String elementMetaData = (Boolean) dataModel.get("includeMetaData") ? FormUtil.generateElementMetaData(this) : "";
-        Form childForm = this.getSubForm(formData);
-        String readonly = "true".equalsIgnoreCase(this.getPropertyString("readonly")) ? " readonly" : "";
+        Form childForm = getSubForm(formData);
+        String readonly = "true".equalsIgnoreCase(getPropertyString("readonly")) ? " readonly" : "";
         String html = "<div class='subform-cell' " + elementMetaData + "><div class='mpf-container" + readonly + "'>";
         if (childForm != null) {
             String subFormHtml = childForm.render(formData, Boolean.FALSE);
@@ -147,7 +148,7 @@ public class FormWizardChild extends AbstractSubForm {
         String paramName = FormUtil.getElementParameterName(this);
         Map params = formData.getRequestParams();
         String disabled = "";
-        FormWizard parent = (FormWizard)this.getParent();
+        FormWizard parent = (FormWizard)getParent();
         if ("true".equalsIgnoreCase(parent.getPropertyString("partiallyStore"))) {
             disabled = " disabled=\"disabled\"";
         }
@@ -165,10 +166,10 @@ public class FormWizardChild extends AbstractSubForm {
         return html;
     }
 
-    protected Boolean loadChild(FormData formData) {
-        FormWizard parent = (FormWizard)this.getParent();
-        Integer cPageNum = parent.getCurrentPageNumber(formData);
-        if (cPageNum != null && this.getPropertyString("pageNum").equals(Integer.toString(cPageNum))) {
+    protected boolean loadChild(FormData formData) {
+        FormWizard parent = (FormWizard)getParent();
+        int cPageNum = parent.getCurrentPageNumber(formData);
+        if (getPropertyString("pageNum").equals(Integer.toString(cPageNum))) {
             return true;
         }
         if (FormUtil.isFormSubmitted(this, formData) && !parent.isActive(FormUtil.findRootForm(parent), formData)) {
@@ -180,7 +181,7 @@ public class FormWizardChild extends AbstractSubForm {
     @Override
     public String getPrimaryKeyValue(FormData formData) {
         String primaryKeyValue = null;
-        String parentSubFormId = this.getPropertyString("parentSubFormId");
+        String parentSubFormId = getPropertyString("parentSubFormId");
         if (parentSubFormId != null && !parentSubFormId.isEmpty()) {
             Form rootForm = FormUtil.findRootForm(this);
             Element foreignKeyElement = FormUtil.findElement(parentSubFormId, rootForm, formData);
@@ -195,7 +196,7 @@ public class FormWizardChild extends AbstractSubForm {
 
     @Override
     protected Form getSubForm(FormData formData) {
-        Collection<Element> children = this.getChildren(formData);
+        Collection<Element> children = getChildren(formData);
         if (children != null && !children.isEmpty()) {
             return (Form)getChildren().iterator().next();
         }
@@ -204,17 +205,17 @@ public class FormWizardChild extends AbstractSubForm {
 
     @Override
     public boolean continueValidation(FormData formData) {
-        return !("true".equals(this.getParent().getPropertyString("changePage")) && !"true".equals(this.getPropertyString("validate")) || "true".equals(this.getPropertyString("readonly")) || this.skipFormatData || formData.getFormResult("_PREVIEW_MODE") != null);
+        return !("true".equals(getParent().getPropertyString("changePage")) && !"true".equals(getPropertyString("validate")) || "true".equals(getPropertyString("readonly")) || skipFormatData || formData.getFormResult("_PREVIEW_MODE") != null);
     }
 
     @Override
     public FormRowSet formatData(FormData formData) {
         FormRowSet rowSet = super.formatData(formData);
-        FormWizard parent = (FormWizard)this.getParent();
+        FormWizard parent = (FormWizard)getParent();
         Integer cPageNum = parent.getCurrentPageNumber(formData);
-        if (!"true".equals(this.getParent().getPropertyString("changePage")) && "true".equals(this.getParent().getPropertyString("partiallyStore")) && !this.getPropertyString("pageNum").equals(Integer.toString(cPageNum))) {
-            this.skipFormatData = true;
-            this.setProperty("readonly", "true");
+        if (!"true".equals(getParent().getPropertyString("changePage")) && "true".equals(getParent().getPropertyString("partiallyStore")) && !getPropertyString("pageNum").equals(Integer.toString(cPageNum))) {
+            skipFormatData = true;
+            setProperty("readonly", "true");
         }
         return rowSet;
     }

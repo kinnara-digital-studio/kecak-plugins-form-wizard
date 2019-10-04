@@ -23,11 +23,11 @@
                     <#if e.hasError(formData) >
                         <#assign errorCss="error">
                     </#if>
-                    <#if cPageNum! == e.properties.pageNum!>
+                    <#if cPageNum! == e.properties.pageNum!?number >
                         <#assign mobileCss="after">
                         <li class="nav_item current ${errorCss}"><button disabled><span>${e.properties.label!?html}</span></button></li>
                     <#else>
-                        <li class="nav_item ${errorCss} ${mobileCss}"><button <#if elementMetaData! != "">disabled</#if> rel="${e.properties.pageNum!}"><span>${e.properties.label!?html}</span></button></li>
+                        <li class="nav_item ${errorCss} ${mobileCss}"><button <#if elementMetaData! != "">disabled</#if> rel="${e.properties.pageNum!?number}"><span>${e.properties.label!?html}</span></button></li>
                     </#if>
                 </#if>
             </#list>
@@ -38,12 +38,12 @@
         <div class="page-container">
             <#list element.children as e>
                 <#if e.className == '${formWizardChildClassName}' >
-                    <#if cPageNum! == e.properties.pageNum!> 
-                        <div class="page_${e.properties.pageNum!} current">
+                    <#if cPageNum! == e.properties.pageNum!?number >
+                        <div class="page_${e.properties.pageNum!?number} current">
                             ${e.render(formData, includeMetaData!false)}
                         </div>
                     <#else>
-                        <div class="page_${e.properties.pageNum!}" style="display:none;">
+                        <div class="page_${e.properties.pageNum!?number}" style="display:none;">
                             ${e.render(formData, includeMetaData!false)}
                         </div>
                     </#if>
@@ -64,11 +64,11 @@
                     <#if e.hasError(formData) >
                         <#assign errorCss="error">
                     </#if>
-                    <#if cPageNum! == e.properties.pageNum!>
+                    <#if cPageNum! == e.properties.pageNum!?number>
                         <#assign mobileCss="after">
                         <li class="nav_item current ${errorCss}"><button disabled><span>${e.properties.label!?html}</span></button></li>
                     <#else>
-                        <li class="nav_item ${errorCss} ${mobileCss}"><button <#if elementMetaData! != "">disabled</#if> rel="${e.properties.pageNum!}"><span>${e.properties.label!?html}</span></button></li>
+                        <li class="nav_item ${errorCss} ${mobileCss}"><button <#if elementMetaData! != "">disabled</#if> rel="${e.properties.pageNum!?number}"><span>${e.properties.label!?html}</span></button></li>
                     </#if>
                 </#if>
             </#list>
@@ -77,8 +77,8 @@
         </div>
 
         <div class="page-button-panel">
-            <input type="submit" class="page-button-prev" name="${elementParamName!}_prev_page" value="${element.properties.prevButtonlabel!?html}" <#if cPageNum! == "1">disabled</#if> />
-            <input type="submit" class="page-button-next" name="${elementParamName!}_next_page" value="${element.properties.nextButtonlabel!?html}" <#if elementMetaData! != "">disabled</#if> <#if cPageNum! == element.properties.totalPage!>disabled</#if>/>
+            <input type="submit" class="page-button-prev" name="${elementParamName!}_prev_page" value="${element.properties.prevButtonlabel!?html}" <#if (cPageNum == 1)>hidden</#if> />
+            <input type="submit" class="page-button-next" name="${elementParamName!}_next_page" value="${element.properties.nextButtonlabel!?html}" <#if elementMetaData! != "">disabled</#if> <#if (cPageNum >= totalPage)>hidden</#if>/>
         </div>
 
     </div>
