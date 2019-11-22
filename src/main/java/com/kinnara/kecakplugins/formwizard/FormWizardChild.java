@@ -3,7 +3,6 @@ package com.kinnara.kecakplugins.formwizard;
 import org.joget.apps.app.dao.FormDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;
 import org.joget.apps.app.model.FormDefinition;
-import org.joget.apps.app.service.AppPluginUtil;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.lib.HiddenField;
 import org.joget.apps.form.model.*;
@@ -28,7 +27,7 @@ public class FormWizardChild extends AbstractSubForm {
     
     @Override
     public String getName() {
-        return AppPluginUtil.getMessage("formWizard.title", getClassName(), "/message/formWizard") + " - Child Page";
+        return "Form Wizard Child Page";
     }
 
     @Override
@@ -205,6 +204,8 @@ public class FormWizardChild extends AbstractSubForm {
 
     @Override
     public boolean continueValidation(FormData formData) {
+        String targetPage = formData.getRequestParameter("changePage");
+        String currentPage = formData.getRequestParameter("currentPage");
         return !("true".equals(getParent().getPropertyString("changePage")) && !"true".equals(getPropertyString("validate")) || "true".equals(getPropertyString("readonly")) || skipFormatData || formData.getFormResult("_PREVIEW_MODE") != null);
     }
 

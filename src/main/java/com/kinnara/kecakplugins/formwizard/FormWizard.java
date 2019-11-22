@@ -1,6 +1,5 @@
 package com.kinnara.kecakplugins.formwizard;
 
-import org.joget.apps.app.service.AppPluginUtil;
 import org.joget.apps.app.service.AppUtil;
 import org.joget.apps.form.lib.SubForm;
 import org.joget.apps.form.model.*;
@@ -9,13 +8,16 @@ import org.joget.apps.form.service.FormUtil;
 import org.joget.commons.util.LogUtil;
 import org.joget.plugin.base.PluginWebSupport;
 import org.joget.workflow.util.WorkflowUtil;
-import org.osgi.framework.BundleContext;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Map;
+import java.util.Optional;
+import java.util.stream.Stream;
 
 /**
  *
@@ -26,56 +28,65 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
     private int currentPageNumber = 0;
     private boolean partiallyStoreError = false;
 
+    @Override
     public String getName() {
-        return AppPluginUtil.getMessage("formWizard.title", getClassName(), "/message/formWizard");
+        return "Form Wizard";
     }
 
+    @Override
     public String getVersion() {
         return getClass().getPackage().getImplementationVersion();
     }
 
+    @Override
     public String getDescription() {
         return getClass().getPackage().getImplementationTitle();
     }
 
+    @Override
     public String getLabel() {
         return getName();
     }
 
+    @Override
     public String getClassName() {
         return getClass().getName();
     }
 
+    @Override
     public String getPropertyOptions() {
         String[] args = {getClassName()};
         return AppUtil.readPluginResource(getClassName(), "/properties/formWizard.json", args, true, "/message/formWizard");
     }
 
+    @Override
     public String getFormBuilderCategory() {
         return "Kecak";
     }
 
+    @Override
     public int getFormBuilderPosition() {
         return 300;
     }
 
+    @Override
     public String getFormBuilderIcon() {
         return "/plugin/" + SubForm.class.getName() + "/images/subForm_icon.gif";
     }
 
+    @Override
     public String getFormBuilderTemplate() {
         return "<label class='label'>" + getName() + "</label>";
     }
 
     @Override
     public Collection<Element> getChildren(FormData formData) {
-        Collection children = super.getChildren();
+        Collection<Element> children = super.getChildren();
         if (formData != null && (children == null || children.isEmpty())) {
-            Object numberOfPageObject = getProperty("numberOfPage");
-            if (numberOfPageObject instanceof Map) {
-                Map temp = (Map) numberOfPageObject;
-                int numberOfPage = Integer.parseInt(temp.get("className").toString());
-                Map pagesProperties = (Map) temp.get("properties");
+            Map<String, Object> numberOfPageObject = (Map<String, Object>) getProperty("numberOfPage");
+            if (numberOfPageObject != null) {
+                int numberOfPage = Integer.parseInt(numberOfPageObject.get("className").toString());
+                Map pagesProperties = (Map) numberOfPageObject.get("properties");
                 FormWizardKeyContainer container = new FormWizardKeyContainer();
                 container.setParent(this);
                 int pageCount = 0;
@@ -104,48 +115,37 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
 
     @Override
     public boolean continueValidation(FormData formData) {
-        return true;
+        // check for validation on back Prev
+        boolean noValidationOnPrev = "true".equalsIgnoreCase(getPropertyString("noValidationOnPrev"));
+        return !(noValidationOnPrev && (prevButtonClicked(formData) || getTargetPageNumber(formData) < currentPageNumber));
     }
 
     @Override
     public String renderTemplate(FormData formData, Map dataModel) {
-        int totalPage;
-        int pageNum;
-        Collection<Element> childs;
-        String paramName;
-        Iterator i$;
+        String paramName = FormUtil.getElementParameterName(this);
+        int pageNum = getCurrentPageNumber(formData);
+        int totalPage = Integer.parseInt(getPropertyString("totalPage"));
+
         boolean hasError;
-        paramName = FormUtil.getElementParameterName(this);
-        pageNum = getCurrentPageNumber(formData);
-        totalPage = Integer.parseInt(getPropertyString("totalPage"));
-        hasError = true;
         if ("true".equals(getPropertyString("child_validate_page_" + currentPageNumber))) {
-            childs = getChildren(formData);
-            i$ = childs.iterator();
-            while (i$.hasNext()) {
-                Element c = (Element) i$.next();
-                if (!c.getPropertyString("pageNum").equals(String.valueOf(currentPageNumber))) {
-                    continue;
-                }
-                if (!c.hasError(formData).booleanValue() && !partiallyStoreError) {
-                    hasError = false;
-                }
-                break;
-            }
+            hasError = getChildren(formData).stream()
+                    .filter(c -> c.getPropertyString("pageNum").equals(String.valueOf(currentPageNumber)))
+                    .anyMatch(c -> c.hasError(formData) || partiallyStoreError);
         } else {
             hasError = false;
         }
-        if (!hasError && formData.getRequestParameter(paramName + "_next_page") != null) {
+
+        if (!hasError && nextButtonClicked(formData)) {
             pageNum = pageNum + 1;
             if (pageNum <= totalPage) {
                 currentPageNumber = pageNum;
             }
-        } else if (!hasError && formData.getRequestParameter(paramName + "_prev_page") != null) {
+        } else if (!hasError && prevButtonClicked(formData)) {
             pageNum = pageNum - 1;
             if (pageNum > 0) {
                 currentPageNumber = pageNum;
             }
-        } else if (!hasError && formData.getRequestParameter(paramName + "_change_page") != null && !formData.getRequestParameter(paramName + "_change_page").isEmpty()) {
+        } else if (!hasError && tabButtonClicked(formData)) {
             currentPageNumber = Integer.parseInt(formData.getRequestParameter(paramName + "_change_page"));
         }
         dataModel.put("cPageNum", getCurrentPageNumber(formData));
@@ -193,7 +193,7 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
     public void webService(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
         boolean isAdmin = WorkflowUtil.isCurrentUserInRole("ROLE_ADMIN");
         if (!isAdmin) {
-            response.sendError(401);
+            response.sendError(HttpServletResponse.SC_UNAUTHORIZED);
             return;
         }
         String action = request.getParameter("action");
@@ -247,30 +247,43 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
 
     @Override
     public boolean isActive(Form form, FormData formData) {
-        String paramName = FormUtil.getElementParameterName(this);
         Integer pageNum = getCurrentPageNumber(formData);
-        Integer totalPage = Integer.parseInt((String) getProperty("totalPage"));
-        Boolean changePage = false;
-        if (formData.getRequestParameter(paramName + "_next_page") != null) {
-            Integer n = pageNum;
-            Integer n2 = pageNum = pageNum + 1;
-            if (pageNum <= totalPage) {
-                changePage = true;
-            }
-        } else if (formData.getRequestParameter(paramName + "_prev_page") != null) {
-            Integer n = pageNum;
-            Integer n3 = pageNum = pageNum - 1;
-            if (pageNum > 0) {
-                changePage = true;
-            }
-        } else if (formData.getRequestParameter(paramName + "_change_page") != null && !formData.getRequestParameter(paramName + "_change_page").isEmpty()) {
-            changePage = true;
-        }
+        Integer totalPage = Integer.parseInt(getPropertyString("totalPage"));
+        boolean changePage = (nextButtonClicked(formData) && pageNum <= totalPage)
+                || (prevButtonClicked(formData) && pageNum > 0)
+                || (tabButtonClicked(formData));
+
         if (changePage) {
             formData.setStay(true);
             setProperty("changePage", "true");
         }
+
         return changePage;
+    }
+
+    protected boolean nextButtonClicked(FormData formData) {
+        if(formData == null)
+            return false;
+
+        String paramName = FormUtil.getElementParameterName(this);
+        return formData.getRequestParameter(paramName + "_next_page") != null;
+    }
+
+    protected boolean prevButtonClicked(FormData formData) {
+        if(formData == null)
+            return false;
+
+        String paramName = FormUtil.getElementParameterName(this);
+        return formData.getRequestParameter(paramName + "_prev_page") != null;
+    }
+
+    protected boolean tabButtonClicked(FormData formData) {
+        if(formData == null)
+            return false;
+
+        String paramName = FormUtil.getElementParameterName(this);
+        return formData.getRequestParameter(paramName + "_change_page") != null
+                && !formData.getRequestParameter(paramName + "_change_page").isEmpty();
     }
 
     protected int getCurrentPageNumber(FormData formData) {
@@ -282,6 +295,19 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
             }
             currentPageNumber = Integer.parseInt(cPageNum);
         }
+        return currentPageNumber;
+    }
+
+    protected int getTargetPageNumber(FormData formData) {
+        if(prevButtonClicked(formData) && currentPageNumber > 1) {
+            return currentPageNumber - 1;
+        }
+
+        if(tabButtonClicked(formData)) {
+            String paramName = FormUtil.getElementParameterName(this);
+            return Integer.parseInt(formData.getRequestParameter(paramName + "_change_page"));
+        }
+
         return currentPageNumber;
     }
 

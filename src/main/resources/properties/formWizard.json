@@ -119,6 +119,18 @@
                 ]
             },
             {
+                name:'noValidationOnPrev',
+                label:'@@formWizard.noValidationOnPrev@@',
+                type:'checkbox',
+                value:'false',
+                options:[
+                    {
+                        value:'true',
+                        label:''
+                    }
+                ]
+            },
+            {
                 name : 'css',
                 label : '@@formWizard.css@@',
                 type : 'textarea',

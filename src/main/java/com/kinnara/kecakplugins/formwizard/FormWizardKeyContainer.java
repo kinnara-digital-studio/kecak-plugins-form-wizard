@@ -31,26 +31,32 @@ public class FormWizardKeyContainer extends Element implements FormContainer{
         return html.toString();
     }
 
+    @Override
     public String getName() {
-        return AppPluginUtil.getMessage("formWizard.title", getClassName(), "/message/formWizard") + " Key Container";
+        return "Form Wizard Key Container";
     }
 
+    @Override
     public String getVersion() {
         return getClass().getPackage().getImplementationVersion();
     }
 
+    @Override
     public String getDescription() {
         return getClass().getPackage().getImplementationTitle();
     }
 
+    @Override
     public String getLabel() {
         return getName();
     }
 
+    @Override
     public String getClassName() {
         return this.getClass().getName();
     }
 
+    @Override
     public String getPropertyOptions() {
         return "";
     }
