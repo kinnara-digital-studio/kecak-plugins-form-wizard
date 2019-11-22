@@ -204,8 +204,6 @@ public class FormWizardChild extends AbstractSubForm {
 
     @Override
     public boolean continueValidation(FormData formData) {
-        String targetPage = formData.getRequestParameter("changePage");
-        String currentPage = formData.getRequestParameter("currentPage");
         return !("true".equals(getParent().getPropertyString("changePage")) && !"true".equals(getPropertyString("validate")) || "true".equals(getPropertyString("readonly")) || skipFormatData || formData.getFormResult("_PREVIEW_MODE") != null);
     }
 
