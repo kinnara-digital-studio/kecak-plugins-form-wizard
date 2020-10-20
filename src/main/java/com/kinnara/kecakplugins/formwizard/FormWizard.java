@@ -23,7 +23,7 @@ import java.util.stream.Stream;
  *
  * @author Yonathan
  */
-public class FormWizard extends FormButton implements FormBuilderPaletteElement, PluginWebSupport, FormContainer {
+public class FormWizard extends FormButton implements FormBuilderPaletteElement, PluginWebSupport, FormContainer, AceFormElement, AdminLteFormElement {
 
     private int currentPageNumber = 0;
     private boolean partiallyStoreError = false;
@@ -161,6 +161,8 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
         String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
         return html;
     }
+
+
 
     public FormWizardChild getChildPage(String label, String formDefId, String readonly, String parentSubFormId, String subFormParentId, String validate, String pageNum) {
         FormWizardChild page = new FormWizardChild();
