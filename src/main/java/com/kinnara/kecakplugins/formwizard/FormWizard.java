@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  *
@@ -162,7 +161,15 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
         return html;
     }
 
-
+    @Override
+    public String renderAceTemplate( FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
+		return null;
+    }
+    
+    @Override
+    public String renderAdminLteTemplate( FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
+		return null;
+    }
 
     public FormWizardChild getChildPage(String label, String formDefId, String readonly, String parentSubFormId, String subFormParentId, String validate, String pageNum) {
         FormWizardChild page = new FormWizardChild();
