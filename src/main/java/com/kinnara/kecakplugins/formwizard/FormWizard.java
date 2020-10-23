@@ -163,7 +163,45 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
 
     @Override
     public String renderAceTemplate( FormData formData, @SuppressWarnings("rawtypes") Map dataModel) {
-		return null;
+
+        String paramName = FormUtil.getElementParameterName(this);
+        int pageNum = getCurrentPageNumber(formData);
+        int totalPage = Integer.parseInt(getPropertyString("totalPage"));
+
+        boolean hasError;
+        if ("true".equals(getPropertyString("child_validate_page_" + currentPageNumber))) {
+            hasError = getChildren(formData).stream()
+                    .filter(c -> c.getPropertyString("pageNum").equals(String.valueOf(currentPageNumber)))
+                    .anyMatch(c -> c.hasError(formData) || partiallyStoreError);
+        } else {
+            hasError = false;
+        }
+
+        if (!hasError && nextButtonClicked(formData)) {
+            pageNum = pageNum + 1;
+            if (pageNum <= totalPage) {
+                currentPageNumber = pageNum;
+            }
+        } else if (!hasError && prevButtonClicked(formData)) {
+            pageNum = pageNum - 1;
+            if (pageNum > 0) {
+                currentPageNumber = pageNum;
+            }
+        } else if (!hasError && tabButtonClicked(formData)) {
+            currentPageNumber = Integer.parseInt(formData.getRequestParameter(paramName + "_change_page"));
+        }
+        dataModel.put("cPageNum", getCurrentPageNumber(formData));
+        if ("true".equals(getPropertyString("onlyAllowSubmitOnLastPage")) && totalPage != getCurrentPageNumber(formData)) {
+            hideParentFormButton(null);
+        }
+
+        dataModel.put("totalPage", Optional.ofNullable(getPropertyString("totalPage")).map(Integer::parseInt).orElse(0));
+
+        dataModel.put("className", getClassName());
+        dataModel.put("formWizardChildClassName", FormWizardChild.class.getName());
+        String template = "formWizardAceAdmin.ftl";
+        String html = FormUtil.generateElementHtml(this, formData, template, dataModel);
+        return html;
     }
     
     @Override
