@@ -211,7 +211,7 @@ public class FormWizardChild extends AbstractSubForm {
     public FormRowSet formatData(FormData formData) {
         FormRowSet rowSet = super.formatData(formData);
         FormWizard parent = (FormWizard)getParent();
-        Integer cPageNum = parent.getCurrentPageNumber(formData);
+        int cPageNum = parent.getCurrentPageNumber(formData);
         if (!"true".equals(getParent().getPropertyString("changePage")) && "true".equals(getParent().getPropertyString("partiallyStore")) && !getPropertyString("pageNum").equals(Integer.toString(cPageNum))) {
             skipFormatData = true;
             setProperty("readonly", "true");

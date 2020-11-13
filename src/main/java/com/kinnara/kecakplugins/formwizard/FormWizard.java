@@ -17,7 +17,6 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Map;
 import java.util.Optional;
-import java.util.stream.Stream;
 
 /**
  *
@@ -213,14 +212,15 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
         }
     }
 
+    @Override
     public FormData actionPerformed(Form form, FormData formData) {
         formData = FormUtil.executeElementFormatDataForValidation(form, formData);
         FormUtil.executeValidators(this, formData);
         if ("true".equalsIgnoreCase(getPropertyString("partiallyStore")) && formData.getFormResult("_PREVIEW_MODE") == null) {
             partiallyStoreError = false;
-            Integer pageNum = getCurrentPageNumber(formData);
+            int pageNum = getCurrentPageNumber(formData);
             for (Element e : getChildren(formData)) {
-                if (!pageNum.toString().equals(e.getPropertyString("pageNum")) || e.hasError(formData)) {
+                if (!Integer.toString(pageNum).equals(e.getPropertyString("pageNum")) || e.hasError(formData)) {
                     continue;
                 }
                 formData = FormUtil.executeElementFormatData(form, formData);
@@ -247,8 +247,8 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
 
     @Override
     public boolean isActive(Form form, FormData formData) {
-        Integer pageNum = getCurrentPageNumber(formData);
-        Integer totalPage = Integer.parseInt(getPropertyString("totalPage"));
+        int pageNum = getCurrentPageNumber(formData);
+        int totalPage = Integer.parseInt(getPropertyString("totalPage"));
         boolean changePage = (nextButtonClicked(formData) && pageNum <= totalPage)
                 || (prevButtonClicked(formData) && pageNum > 0)
                 || (tabButtonClicked(formData));
@@ -347,5 +347,10 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
             }
         }
         return fieldNames;
+    }
+
+    @Override
+    public String getElementValue(FormData formData) {
+        return super.getElementValue(formData);
     }
 }
