@@ -55,7 +55,7 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
     @Override
     public String getPropertyOptions() {
         String[] args = {getClassName()};
-        return AppUtil.readPluginResource(getClassName(), "/properties/FormWizard.json", args, true, "/messages/formWizard");
+        return AppUtil.readPluginResource(getClassName(), "/properties/FormWizard.json", args, true, "/messages/FormWizard");
     }
 
     @Override
@@ -203,7 +203,7 @@ public class FormWizard extends FormButton implements FormBuilderPaletteElement,
             for (int i = 1; i <= number; ++i) {
                 String pageNumber = Integer.toString(i);
                 Object[] arguments = new String[]{pageNumber, pageNumber, pageNumber, pageNumber, pageNumber, pageNumber, pageNumber, pageNumber, pageNumber};
-                output.append(AppUtil.readPluginResource(getClass().getName(), "/properties/FormWizardChild.json", arguments, true, "messages/formWizard")).append(",");
+                output.append(AppUtil.readPluginResource(getClass().getName(), "/properties/FormWizardChild.json", arguments, true, "messages/FormWizard")).append(",");
             }
             output = new StringBuilder(output.substring(0, output.length() - 1) + "]");
             response.getWriter().write(output.toString());
