@@ -1,0 +1,184 @@
+[
+  {
+    "title": "@@formWizard.edit@@",
+    "properties": [
+      {
+        "name": "id",
+        "label": "@@formWizard.id@@",
+        "type": "textfield",
+        "required": "True",
+        "regex_validation": "^[a-zA-Z0-9_]+$",
+        "validation_message": "@@formWizard.invalidId@@"
+      },
+      {
+        "name": "label",
+        "label": "@@formWizard.label@@",
+        "type": "textfield"
+      },
+      {
+        "name": "numberOfPage",
+        "label": "@@formWizard.numberOfPage@@",
+        "type": "elementselect",
+        "value": "2",
+        "options": [
+          {
+            "value": "2",
+            "label": "2"
+          },
+          {
+            "value": "3",
+            "label": "3"
+          },
+          {
+            "value": "4",
+            "label": "4"
+          },
+          {
+            "value": "5",
+            "label": "5"
+          },
+          {
+            "value": "6",
+            "label": "6"
+          },
+          {
+            "value": "7",
+            "label": "7"
+          },
+          {
+            "value": "8",
+            "label": "8"
+          },
+          {
+            "value": "9",
+            "label": "9"
+          },
+          {
+            "value": "10",
+            "label": "10"
+          },
+          {
+            "value": "11",
+            "label": "11"
+          },
+          {
+            "value": "12",
+            "label": "12"
+          },
+          {
+            "value": "13",
+            "label": "13"
+          },
+          {
+            "value": "14",
+            "label": "14"
+          },
+          {
+            "value": "15",
+            "label": "15"
+          }
+        ],
+        "url": "[CONTEXT_PATH]/web/json/app[APP_PATH]/plugin/%s/service?action=getJson",
+        "keep_value_on_change": "true"
+      }
+    ]
+  },
+  {
+    "title": "@@formWizard.advancedOptions@@",
+    "properties": [
+      {
+        "label": "@@formWizard.data@@",
+        "type": "header"
+      },
+      {
+        "name": "partiallyStore",
+        "label": "@@formWizard.partiallyStore@@",
+        "type": "checkbox",
+        "value": "false",
+        "options": [
+          {
+            "value": "true",
+            "label": ""
+          }
+        ]
+      },
+      {
+        "name": "storeMainFormOnPartiallyStore",
+        "label": "@@formWizard.storeMainFormOnPartiallyStore@@",
+        "type": "checkbox",
+        "value": "true",
+        "control_field": "partiallyStore",
+        "control_value": "true",
+        "options": [
+          {
+            "value": "true",
+            "label": ""
+          }
+        ]
+      },
+      {
+        "label": "@@formWizard.ui@@",
+        "type": "header"
+      },
+      {
+        "name": "displayMode",
+        "label": "@@formWizard.displayMode@@",
+        "type": "selectbox",
+        "value": "wizard",
+        "options": [
+          {
+            "value": "wizard",
+            "label": "@@formWizard.displayMode.wizard@@"
+          },
+          {
+            "value": "tab",
+            "label": "@@formWizard.displayMode.tab@@"
+          }
+        ]
+      },
+      {
+        "name": "prevButtonlabel",
+        "label": "@@formWizard.prevButtonlabel@@",
+        "value": "Prev",
+        "type": "textfield"
+      },
+      {
+        "name": "nextButtonlabel",
+        "label": "@@formWizard.nextButtonlabel@@",
+        "value": "Next",
+        "type": "textfield"
+      },
+      {
+        "name": "onlyAllowSubmitOnLastPage",
+        "label": "@@formWizard.onlyAllowSubmitOnLastPage@@",
+        "type": "checkbox",
+        "value": "false",
+        "options": [
+          {
+            "value": "true",
+            "label": ""
+          }
+        ]
+      },
+      {
+        "name": "noValidationOnPrev",
+        "label": "@@formWizard.noValidationOnPrev@@",
+        "type": "checkbox",
+        "value": "false",
+        "options": [
+          {
+            "value": "true",
+            "label": ""
+          }
+        ]
+      },
+      {
+        "name": "css",
+        "label": "@@formWizard.css@@",
+        "type": "textarea",
+        "cols": "60",
+        "rows": "15"
+      }
+    ]
+  }
+]

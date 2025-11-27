@@ -1,5 +1,6 @@
-package com.kinnara.kecakplugins.formwizard;
+package com.kinnarastudio.kecakplugins.formwizard;
 
+import com.kinnarastudio.kecakplugins.formwizard.form.FormWizard;
 import org.osgi.framework.BundleActivator;
 import org.osgi.framework.BundleContext;
 import org.osgi.framework.ServiceRegistration;

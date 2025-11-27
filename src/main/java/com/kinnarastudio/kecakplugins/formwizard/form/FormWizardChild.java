@@ -1,4 +1,4 @@
-package com.kinnara.kecakplugins.formwizard;
+package com.kinnarastudio.kecakplugins.formwizard.form;
 
 import org.joget.apps.app.dao.FormDefinitionDao;
 import org.joget.apps.app.model.AppDefinition;

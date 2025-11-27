@@ -3,9 +3,8 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.kinnara.kecakplugins.formwizard;
+package com.kinnarastudio.kecakplugins.formwizard.form;
 
-import org.joget.apps.app.service.AppPluginUtil;
 import org.joget.apps.form.lib.HiddenField;
 import org.joget.apps.form.model.Element;
 import org.joget.apps.form.model.Form;

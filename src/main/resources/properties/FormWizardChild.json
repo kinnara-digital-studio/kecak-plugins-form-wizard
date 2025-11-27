@@ -1,0 +1,67 @@
+
+    {
+        "title" : "@@formWizard.page@@ %s",
+        "properties" : [
+            {
+                "label" : "@@formWizard.general@@",
+                "type" : "header"
+            },
+            {
+                "name":"page%s_label",
+                "label":"@@formWizard.label@@",
+                "type":"textfield",
+                "value" : "Page %s",
+                "required" : "true"
+            },
+            {
+                "name" : "page%s_formDefId",
+                "label" : "@@formWizard.formDefId@@",
+                "type" : "selectbox",
+                "required" : "true",
+                "options_ajax" : "[CONTEXT_PATH]/web/json/console/app[APP_PATH]/forms/options"
+            },
+            {
+                "name":"page%s_readonly",
+                "label":"@@formWizard.readonly@@",
+                "type":"checkbox",
+                "value":"false",
+                "options":[
+                    {
+                        "value":"true",
+                        "label":""
+                    }
+                ]
+            },
+            {
+                "label" : "@@formWizard.dataLinkageAndValidation@@",
+                "type" : "header"
+            },
+            {
+                "name":"page%s_parentSubFormId",
+                "label":"@@formWizard.parentField@@",
+                "type":"textfield",
+                "value" : "page%s_key",
+                "regex_validation" : "^[a-zA-Z0-9_]+$",
+                "validation_message" : "@@formWizard.invalidId@@"
+            },
+            {
+                "name":"page%s_subFormParentId",
+                "label":"@@formWizard.subformField@@",
+                "type":"textfield",
+                "regex_validation" : "^[a-zA-Z0-9_]+$",
+                "validation_message" : "@@formWizard.invalidId@@"
+            },
+            {
+                "name":"page%s_validate",
+                "label":"@@formWizard.validateWhenChangePage@@",
+                "type":"checkbox",
+                "value":"true",
+                "options":[
+                    {
+                        "value":"true",
+                        "label":""
+                    }
+                ]
+            }
+        ]
+    }
